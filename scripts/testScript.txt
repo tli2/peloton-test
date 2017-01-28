@@ -1,0 +1,6 @@
+Select * From a
+Select * From b
+Select 2 % 1 From a
+Select 2 % 1 From b
+Select value From a
+Select value From b
