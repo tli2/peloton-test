@@ -1,0 +1,27 @@
+garrett@garrett-VirtualBox:~/Desktop/test/practicum$ ls
+BaseTestSetup.py  BaseTestSetup.pyc  test_modules_prac  test_select.py  test_select.pyc
+garrett@garrett-VirtualBox:~/Desktop/test/practicum$ nose2
+INFO:root:Loading config file '/home/garrett/Desktop/test/test.conf-sample'
+INFO:root:connected to ORACLE
+INFO:root:connected to TARGET
+INFO:root:TABLES DROPPED ORACLE
+INFO:root:TABLES DROPPED TARGET
+INFO:root:table/batch passed oracle
+INFO:root:table/batch passed target
+
+Test -> SELECT arithmetic
+        SELECT 5 + 9
+.
+Test -> SELECT col FROM CORP
+        SELECT id FROM CORP
+        SELECT name FROM CORP
+        SELECT age FROM CORP
+        SELECT address FROM CORP
+.
+Test -> SELECT * FROM CORP
+        SELECT * FROM CORP
+.
+----------------------------------------------------------------------
+Ran 3 tests in 0.005s
+
+OK
