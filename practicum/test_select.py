@@ -12,11 +12,11 @@ configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
 # setup the databases
 dbs = ["oracle", "target"]
 test_obj = BaseTestSetup.BaseTest(configPath, dbs)
-test_obj.setupConnections()
-test_obj.getTableNames()
-test_obj.dropTables()
-test_obj.buildTestTables()
-test_obj.getTableCols()
+test_obj.setup_connections()
+test_obj.get_table_names()
+test_obj.drop_tables()
+test_obj.build_test_tables()
+test_obj.get_table_cols()
 
 
 class TestSelect(TestCase):

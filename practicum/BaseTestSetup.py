@@ -5,6 +5,7 @@ import sys
 import logging
 import psycopg2
 from ConfigParser import RawConfigParser
+
 LOG = logging.getLogger()
 LOG_handler = logging.StreamHandler()
 LOG_formatter = logging.Formatter(fmt='%(asctime)s [%(funcName)s:%(lineno)03d] %(levelname)-5s: %(message)s',
@@ -15,19 +16,20 @@ basedir = os.path.realpath(os.path.dirname(__file__))
 sys.path.append(os.path.join(basedir, "..", ".."))
 configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
 
+
 class BaseTest(object):
-    def __init__(self, configPath, dbs, query_count=10):
+    def __init__(self, config_path, dbs, query_count=10):
         # Load in configuration file
-        LOG.info("Loading config file '%s'" % configPath)
+        LOG.info("Loading config file '%s'" % config_path)
         self.config = RawConfigParser()
-        self.config.read(configPath)
+        self.config.read(config_path)
         self.connections = 0
-        self.dbs=dbs
+        self.dbs = dbs
         self.query_count = query_count
         self.table_names = None
         self.table_cols = None
 
-    def setupConnections(self):
+    def setup_connections(self):
         # connect to dbs
         for db in self.dbs:
             try:
@@ -45,13 +47,13 @@ class BaseTest(object):
             except:
                 LOG.error("unable to connect to %s database" % db.upper())
 
-    def closeConnections(self):
+    def close_connections(self):
         for db in self.dbs:
             if self.__dict__[db] is not None:
                 self.__dict__[db].close()
                 LOG.info("closed database {}".format(db.upper()))
 
-    def getTableNames(self):
+    def get_table_names(self):
         table_names = []
         for db in self.dbs:
             conn = self.__dict__[db]
@@ -64,7 +66,7 @@ class BaseTest(object):
             table_names.append(table_names_current)
         self.table_names = table_names
 
-    def getTableCols(self):
+    def get_table_cols(self):
         table_cols = []
         oracle = self.dbs[0]
         conn = self.__dict__[oracle]
@@ -76,7 +78,7 @@ class BaseTest(object):
             table_cols.append(col_names)
         self.table_cols = table_cols
 
-    def dropTables(self):
+    def drop_tables(self):
         for i in range(len(self.dbs)):
             try:
                 conn = self.__dict__[self.dbs[i]];
@@ -89,12 +91,11 @@ class BaseTest(object):
             except:
                 LOG.error("unable to drop tables {}".format(self.dbs[i].upper()))
 
-    def buildTestTables(self):
-        generate_tables.buildRandomTestTables(self, LOG, self.query_count)
+    def build_test_tables(self):
+        generate_tables.build_random_test_tables(self, LOG, self.query_count)
 
 
-
-#======================================================================================
+# ======================================================================================
 """
 dbs = ["oracle", "target"]
 test_obj = QueryTest(configPath, dbs)

@@ -77,7 +77,7 @@ class TestCreateTable(common.BaseTest):
                     attrName1 = t.addAttribute("INT", primaryKey=True)
                     attrName2 = t.addAttribute(attrType2, primaryKey=False)
                     attrName3 = t.addAttribute(attrType3, primaryKey=False)
-                    t.addUniqueConstraint(attrName1, attrName2, attrName3)
+                    t.add_unique_constraint(attrName1, attrName2, attrName3)
                     t.create()
                     LOG.debug("%s -> CREATED!" % tableName)
 

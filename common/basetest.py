@@ -1,4 +1,3 @@
-
 import os
 import sys
 import psycopg2
@@ -19,31 +18,31 @@ LOG.setLevel(logging.INFO)
 DB_ORACLE = "oracle"
 DB_TARGET = "target"
 
+
 class BaseTest(unittest.TestCase):
     """Base test case code that will connect to the oracle and target database"""
-    
-    def __init__(self, testName, configPath, baseName):
-        unittest.TestCase.__init__(self, testName)
+
+    def __init__(self, test_name, config_path, base_name):
+        unittest.TestCase.__init__(self, test_name)
         self.tableCtr = 0
         self.initConnections = False
-        
+
         # Basename for all tables in this test
-        self.baseName = baseName.lower()
-        
+        self.baseName = base_name.lower()
+
         # Load in configuration file
-        LOG.info("Loading config file '%s'" % configPath)
+        LOG.info("Loading config file '%s'" % config_path)
         self.config = RawConfigParser()
-        self.config.read(configPath)
-        
+        self.config.read(config_path)
 
     ## DEF
-    
+
     def nextTableName(self):
         name = "%s_%02d" % (self.baseName, self.tableCtr)
         self.tableCtr += 1
         return name
-    ## DEF
 
+    ## DEF
 
     def createConnections(self):
         # Initialize database connections
@@ -61,36 +60,39 @@ class BaseTest(unittest.TestCase):
                 raise
             assert (not self.__dict__[db] is None)
             LOG.debug("Connected to %s database" % db.upper())
-        ## FOR
+            ## FOR
+
     ## DEF
 
     def closeConnections(self):
         for db in [DB_ORACLE, DB_TARGET]:
             if self.__dict__[db] is not None:
                 self.__dict__[db].close()
-        ## FOR
+                ## FOR
+
     ## DEF
 
     def getConnections(self):
-        return (self.__dict__[DB_ORACLE], self.__dict__[DB_TARGET])
+        return self.__dict__[DB_ORACLE], self.__dict__[DB_TARGET]
 
     def getTargetConn(self):
         return self.__dict__[DB_TARGET]
 
     def getOracleConn(self):
         return self.__dict__[DB_ORACLE]
-    
+
     def getTestTables(self, conn):
         with conn.cursor() as cursor:
             cursor.execute("""
                 SELECT table_name FROM information_schema.tables
                  WHERE table_name LIKE %s
                    AND table_catalog !~ '^(pg_|sql_)'
-                """, (self.baseName+'_%',))
-            result = [ x[0] for x in cursor.fetchall() ]
+                """, (self.baseName + '_%',))
+            result = [x[0] for x in cursor.fetchall()]
         return result
+
     ## DEF
-    
+
     def dropTables(self):
         for db in [DB_ORACLE, DB_TARGET]:
             conn = self.__dict__[db]
@@ -104,7 +106,8 @@ class BaseTest(unittest.TestCase):
                     cursor.execute(sql)
                 LOG.debug("Flushing drop tables for %s" % db)
                 conn.commit()
-            ## WITH
+                ## WITH
+
     ## DEF
 
     def setUp(self):
@@ -114,11 +117,12 @@ class BaseTest(unittest.TestCase):
         # Then clear out any tables that may lingering from the last time we ran this
         self.dropTables()
         pass
+
     ## DEF
 
     def tearDown(self):
         self.closeConnections()
         pass
-    ## DEF
-    
-## CLASS
+        ## DEF
+
+        ## CLASS
