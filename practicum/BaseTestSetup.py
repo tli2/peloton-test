@@ -94,6 +94,17 @@ class BaseTest(object):
     def build_test_tables(self):
         generate_tables.build_random_test_tables(self, LOG, self.query_count)
 
+    def run_query(self, query):
+        conn = self.__dict__[self.dbs[0]]
+        cur = conn.cursor()
+        cur.execute(query)
+        rows_oracle = cur.fetchall()
+        for db in self.dbs[1:]:
+            conn = self.__dict__[db]
+            cur = conn.cursor()
+            cur.execute(query)
+            rows_target = cur.fetchall()
+            assert (rows_oracle == rows_target)
 
 # ======================================================================================
 """

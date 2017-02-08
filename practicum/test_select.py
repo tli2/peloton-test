@@ -28,32 +28,14 @@ class TestSelect(TestCase):
         print("\nTest -> SELECT * FROM CORP")
         query = """SELECT * FROM CORP"""
         print("\t{}".format(query))
-        conn = test_obj.__dict__[test_obj.dbs[0]]
-        cur = conn.cursor()
-        cur.execute(query)
-        rows_oracle = cur.fetchall()
-        for db in test_obj.dbs[1:]:
-            conn = test_obj.__dict__[db]
-            cur = conn.cursor()
-            cur.execute(query)
-            rows_target = cur.fetchall()
-            assert(rows_oracle == rows_target)
+        test_obj.run_query(query)
 
     def test_select_cols(self):
         print("\nTest -> SELECT col FROM CORP")
         for col in test_obj.table_cols[0]:
             query="SELECT {} FROM CORP".format(str(col))
             print("\t{}".format(query))
-            conn = test_obj.__dict__[test_obj.dbs[0]]
-            cur = conn.cursor()
-            cur.execute(query)
-            rows_oracle = cur.fetchall()
-            for db in test_obj.dbs[1:]:
-                conn = test_obj.__dict__[db]
-                cur = conn.cursor()
-                cur.execute(query)
-                rows_target = cur.fetchall()
-                assert (rows_oracle == rows_target)
+            test_obj.run_query(query)
 
     def test_arithmetic(self):
         print("\nTest -> SELECT arithmetic")
@@ -66,11 +48,11 @@ class TestSelect(TestCase):
         cur.execute(query)
         rows_oracle = cur.fetchall()
         results = []
-        for tuple in rows_oracle:
-            results.append(tuple[0])
+        for elem in rows_oracle:
+            results.append(elem[0])
         assert results[0] == (a+b)
 
-    def tearDow(self):
+    def tearDown(self):
         pass
 
 
