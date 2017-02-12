@@ -1,0 +1,20 @@
+<testsuite errors="0" failures="0" name="nose2-junit" skipped="0" tests="6" time="0.154">
+  <testcase classname="test_random_select.TestSelectRandom" name="test_select_random" time="0.024804">
+    <system-err />
+  </testcase>
+  <testcase classname="test_select.TestSelectQuery" name="test_arithmetic" time="0.001156">
+    <system-err />
+  </testcase>
+  <testcase classname="test_select.TestSelectQuery" name="test_select_cols" time="0.001258">
+    <system-err />
+  </testcase>
+  <testcase classname="test_select.TestSelectQuery" name="test_select_star" time="0.000496">
+    <system-err />
+  </testcase>
+  <testcase classname="test_select.TestSelectQuery" name="test_where_1" time="0.016929">
+    <system-err />
+  </testcase>
+  <testcase classname="test_select.TestSelectQuery" name="test_where_in" time="0.007653">
+    <system-err />
+  </testcase>
+</testsuite>

@@ -1,6 +1,5 @@
 from test_modules_prac import generate_tables
 import os
-import shutil
 import sys
 import logging
 import psycopg2
@@ -28,6 +27,7 @@ class BaseTest(object):
         self.query_count = query_count
         self.table_names = None
         self.table_cols = None
+        self.table_col_types=None
 
     def setup_connections(self):
         # connect to dbs
@@ -68,6 +68,7 @@ class BaseTest(object):
 
     def get_table_cols(self):
         table_cols = []
+        table_col_types=[]
         oracle = self.dbs[0]
         conn = self.__dict__[oracle]
         cur = conn.cursor()
@@ -75,13 +76,16 @@ class BaseTest(object):
             query = "SELECT * FROM {}".format(str(table))
             cur.execute(query)
             col_names = [desc[0] for desc in cur.description]
+            col_types = [desc[1]for desc in cur.description]
             table_cols.append(col_names)
+            table_col_types.append(col_types)
         self.table_cols = table_cols
+        self.table_col_types = table_col_types
 
     def drop_tables(self):
         for i in range(len(self.dbs)):
             try:
-                conn = self.__dict__[self.dbs[i]];
+                conn = self.__dict__[self.dbs[i]]
                 cur = conn.cursor()
                 db_table_names = self.table_names[i]
                 for name in db_table_names:
@@ -105,12 +109,3 @@ class BaseTest(object):
             cur.execute(query)
             rows_target = cur.fetchall()
             assert (rows_oracle == rows_target)
-
-# ======================================================================================
-"""
-dbs = ["oracle", "target"]
-test_obj = QueryTest(configPath, dbs)
-test_obj.dropTables()
-test_obj.buildTestTables()
-test_obj.closeConnections()
-"""
