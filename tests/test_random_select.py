@@ -1,9 +1,11 @@
-from unittest import TestCase
 import itertools
-import BaseTestSetup
 import os
 import sys
-from test_modules_prac import randop
+from unittest import TestCase
+
+from practicum.test_modules_prac import randop
+
+from runner import BaseTestSetup
 
 
 class TestSelectRandom(TestCase):
@@ -78,23 +80,23 @@ class TestSelectRandom(TestCase):
         random_ints=[]
         random_floats=[]
         for i in range(100):
-            random_strings+=[randop.create_random_string(randop.create_random_int(1,20))]
-            random_ints+=[randop.create_random_int(-100,100)]
-            random_floats+=[randop.create_random_float(-100,100)]
+            random_strings+=[randop.create_random_string(randop.create_random_int(1, 20))]
+            random_ints+=[randop.create_random_int(-100, 100)]
+            random_floats+=[randop.create_random_float(-100, 100)]
         # query loop
         iterations=10
         while iterations:
             iterations-=1
             query = "SELECT {0}{1}{2} FROM CORP WHERE {3} {4} {5}"
             # obtain indexes
-            index_cols=randop.create_random_int(0,len(combinations_cols)-1)
-            index_cols3_string=randop.create_random_int(0,len(string_cols)-1)
-            index_cols3_int=randop.create_random_int(0,len(int_cols)-1)
-            index_cols4=randop.create_random_int(0,len(combinations_cols4)-1)
-            index_cols4_more=randop.create_random_int(0,len(combinations_cols4_more)-1)
-            index_strings=randop.create_random_int(0,len(random_strings)-1)
-            index_ints=randop.create_random_int(0,len(random_ints)-1)
-            index_floats=randop.create_random_int(0,len(random_floats)-1)
+            index_cols= randop.create_random_int(0, len(combinations_cols) - 1)
+            index_cols3_string= randop.create_random_int(0, len(string_cols) - 1)
+            index_cols3_int= randop.create_random_int(0, len(int_cols) - 1)
+            index_cols4= randop.create_random_int(0, len(combinations_cols4) - 1)
+            index_cols4_more= randop.create_random_int(0, len(combinations_cols4_more) - 1)
+            index_strings= randop.create_random_int(0, len(random_strings) - 1)
+            index_ints= randop.create_random_int(0, len(random_ints) - 1)
+            index_floats= randop.create_random_int(0, len(random_floats) - 1)
             # obtain formatting values
             zero=combinations_cols[index_cols][0]
             one=combinations_cols[index_cols][1]

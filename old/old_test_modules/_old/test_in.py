@@ -3,14 +3,10 @@
 # Small script to show PostgreSQL and Pyscopg together
 #
 
-import psycopg2
-import os
-import filecmp
-import sys
-
-from sql import IN
-from common import fileop
 from common import dbop
+from common import fileop
+from sql import IN
+
 
 #              Test                                 #
 #####################################################

@@ -1,9 +1,11 @@
-from test_modules_prac import generate_tables
+import logging
 import os
 import sys
-import logging
-import psycopg2
 from ConfigParser import RawConfigParser
+
+import psycopg2
+
+from common import generate_tables
 
 LOG = logging.getLogger()
 LOG_handler = logging.StreamHandler()
@@ -61,8 +63,8 @@ class BaseTest(object):
             cur.execute("select relname from pg_class where relkind='r' and relname !~ '^(pg_|sql_)';")
             name_tuples = cur.fetchall()
             table_names_current = []
-            for tuple in name_tuples:
-                table_names_current.append(tuple[0])
+            for elem in name_tuples:
+                table_names_current.append(elem[0])
             table_names.append(table_names_current)
         self.table_names = table_names
 
