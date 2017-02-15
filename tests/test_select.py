@@ -2,8 +2,7 @@ import os
 import sys
 from unittest import TestCase
 
-from practicum.test_modules_prac import randop
-
+from common import randop
 from runner import BaseTestSetup
 
 
@@ -12,11 +11,11 @@ class TestSelectQuery(TestCase):
     def setUpClass(cls):
         basedir = os.path.realpath(os.path.dirname(__file__))
         sys.path.append(os.path.join(basedir, "..", ".."))
-        configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
+        config_path = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
 
         global test_obj
         dbs = ["oracle", "target"]
-        test_obj = BaseTestSetup.BaseTest(configPath, dbs)
+        test_obj = BaseTestSetup.BaseTest(config_path, dbs)
         test_obj.setup_connections()
         test_obj.get_table_names()
         test_obj.drop_tables()
@@ -85,12 +84,11 @@ class TestSelectQuery(TestCase):
 
     def test_where_in(self):
         print("\nTest -> SELECT * FROM CORP WHERE *col* IN *(values)*")
-        col_values = [0] * len(operators)
         columns = table_columns[0]
         types = table_column_types[0]
         string_cols = [columns[i] for i in range(len(types))
                        if types[i] == 1043]
-        string_cols = string_cols * 10
+        string_cols *= 10
         fuzz2 = []
         for i in range(len(string_cols)):
             x = randop.create_random_int(0, 15)

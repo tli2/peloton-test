@@ -6,6 +6,7 @@ basedir = os.path.realpath(os.path.dirname(__file__))
 sys.path.append(os.path.join(basedir, "..", ".."))
 
 import common
+
 LOG = common.LOG
 
 # FIXME: Need to figure out how to get the config path from the commandline

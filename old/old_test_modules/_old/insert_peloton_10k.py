@@ -3,12 +3,10 @@
 # Small script to show PostgreSQL and Pyscopg together
 #
 
-import sys
 import psycopg2
+from main.common import randop
 
-from common import randop
 from common import fileop
-
 
 addr = fileop.parse_conf_peloton('../peloton_test.conf')
 
@@ -40,7 +38,7 @@ except:
 try:
     for rowkey in range(5, 10001):
         name = randop.create_random_string(6)
-        age = randop.create_random_int(1,80)
+        age = randop.create_random_int(1, 80)
         address = randop.create_random_string(12)
         query = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS) VALUES (%s, %s, %s, %s);"
         data = (rowkey, name, age, address)
