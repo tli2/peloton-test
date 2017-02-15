@@ -3,8 +3,8 @@ import os
 import sys
 from unittest import TestCase
 
-from common import randop
-from runner import BaseTestSetup
+from common import randop, base_test
+from runner import base_test
 
 
 class TestSelectRandom(TestCase):
@@ -12,7 +12,7 @@ class TestSelectRandom(TestCase):
     def setUpClass(cls):
         basedir = os.path.realpath(os.path.dirname(__file__))
         sys.path.append(os.path.join(basedir, "..", ".."))
-        configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
+        configPath = os.path.realpath(os.path.join(os.pardir, "test.conf"))
 
         global breakLine
         breakLine = "=====" * 20
@@ -22,7 +22,7 @@ class TestSelectRandom(TestCase):
 
         global test_obj
         dbs = ["oracle", "target"]
-        test_obj = BaseTestSetup.BaseTest(configPath, dbs)
+        test_obj = base_test.BaseTest(configPath, dbs)
         test_obj.setup_connections()
         test_obj.get_table_names()
         test_obj.drop_tables()

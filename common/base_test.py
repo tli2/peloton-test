@@ -1,9 +1,9 @@
 import logging
 import os
-import sys
 from ConfigParser import RawConfigParser
 
 import psycopg2
+import sys
 
 from common import generate_tables
 
@@ -12,10 +12,10 @@ LOG_handler = logging.StreamHandler()
 LOG_formatter = logging.Formatter(fmt='%(asctime)s [%(funcName)s:%(lineno)03d] %(levelname)-5s: %(message)s',
                                   datefmt='%m-%d-%Y %H:%M:%S')
 LOG.setLevel(logging.INFO)
-
 basedir = os.path.realpath(os.path.dirname(__file__))
-sys.path.append(os.path.join(basedir, "..", ".."))
-configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
+sys.path.append(os.path.abspath(os.path.join(basedir, "..")))
+
+configPath = os.path.realpath(os.path.join(os.pardir, "test.conf"))
 
 
 class BaseTest(object):
@@ -29,7 +29,7 @@ class BaseTest(object):
         self.query_count = query_count
         self.table_names = None
         self.table_cols = None
-        self.table_col_types=None
+        self.table_col_types = None
 
     def setup_connections(self):
         # connect to dbs
@@ -46,7 +46,7 @@ class BaseTest(object):
                 assert (not self.__dict__[db] is None)
                 LOG.debug("connected to %s database" % db.upper())
                 self.connections += 1
-            except:
+            except psycopg2.Error:
                 LOG.error("unable to connect to %s database" % db.upper())
 
     def close_connections(self):
@@ -70,7 +70,7 @@ class BaseTest(object):
 
     def get_table_cols(self):
         table_cols = []
-        table_col_types=[]
+        table_col_types = []
         oracle = self.dbs[0]
         conn = self.__dict__[oracle]
         cur = conn.cursor()
@@ -78,7 +78,7 @@ class BaseTest(object):
             query = "SELECT * FROM {}".format(str(table))
             cur.execute(query)
             col_names = [desc[0] for desc in cur.description]
-            col_types = [desc[1]for desc in cur.description]
+            col_types = [desc[1] for desc in cur.description]
             table_cols.append(col_names)
             table_col_types.append(col_types)
         self.table_cols = table_cols
@@ -94,7 +94,7 @@ class BaseTest(object):
                     cur.execute("DROP TABLE {}".format(name))
                 conn.commit()
                 LOG.info("tables dropped {}".format(self.dbs[i]).upper())
-            except:
+            except psycopg2.Error:
                 LOG.error("unable to drop tables {}".format(self.dbs[i].upper()))
 
     def build_test_tables(self):

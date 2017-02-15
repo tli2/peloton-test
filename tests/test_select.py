@@ -2,8 +2,8 @@ import os
 import sys
 from unittest import TestCase
 
-from common import randop
-from runner import BaseTestSetup
+from common import randop, base_test
+from runner import base_test
 
 
 class TestSelectQuery(TestCase):
@@ -11,11 +11,11 @@ class TestSelectQuery(TestCase):
     def setUpClass(cls):
         basedir = os.path.realpath(os.path.dirname(__file__))
         sys.path.append(os.path.join(basedir, "..", ".."))
-        config_path = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
+        config_path = os.path.realpath(os.path.join(os.pardir, "test.conf"))
 
         global test_obj
         dbs = ["oracle", "target"]
-        test_obj = BaseTestSetup.BaseTest(config_path, dbs)
+        test_obj = base_test.BaseTest(config_path, dbs)
         test_obj.setup_connections()
         test_obj.get_table_names()
         test_obj.drop_tables()

@@ -64,4 +64,5 @@ target/
 #project specific
 .idea/
 test.conf-sample
+test.conf
 old/
