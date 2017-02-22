@@ -3,6 +3,7 @@ import os
 import sys
 import pprint
 from common import randop
+from common import query_generate_columns
 from unittest import TestCase
 
 from common import randop, base_test
@@ -92,7 +93,7 @@ def sample_build(statement,clause,predicate,expression,operator):
 
     # format the query
     for col_type in col_types:
-        for x in gen_col_options_build():
+        for x in query_generate_columns.generate_column_options(table_columns):
             query_statement = query_statement_raw
             query_statement += x
             rules = operator_gen(operator)
@@ -104,26 +105,6 @@ def sample_build(statement,clause,predicate,expression,operator):
                 break
             break
         break
-
-
-def gen_col_options_build():
-    # this covers options for the cols or the options for the left hand side
-    col_combinations = []
-    comb_permutations_cols = []
-    for x in range(len(table_columns[0])):
-        col_combinations.append(itertools.combinations(table_columns[0], x))
-    for x in range(1, len(col_combinations)):
-        for comb in col_combinations[x]:
-            for z in itertools.permutations(comb):
-                if z != len(col_combinations) -1:
-                    z += ('',) * ((len(col_combinations) - 1) - x)
-                return_string=""
-                for i in range(len(z)):
-                    if i > 0 and z[i]!='':
-                        return_string=return_string +"," +z[i]
-                    else:
-                        return_string+=z[i]
-                yield return_string + ''
 
 def query_clause_generation(col_type,rules):
     if col_type == "VarChar":
