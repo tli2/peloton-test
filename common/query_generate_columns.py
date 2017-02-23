@@ -1,11 +1,12 @@
 import itertools
 
-# this method generates the combinations for the range the len(table_columns)
+# this method generates the combinations for the range len(table_columns)
 # it then generates all the permutations for each possible combination
 def generate_column_options(table_columns):
-    # this covers options for the cols or the options for the left hand side
+    # First yield the star
+    yield '*'
+    # Now yield all the remaining options
     col_combinations = []
-    comb_permutations_cols = []
     for x in range(len(table_columns[0])):
         col_combinations.append(itertools.combinations(table_columns[0], x))
     for x in range(1, len(col_combinations)):
