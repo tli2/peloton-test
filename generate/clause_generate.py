@@ -1,4 +1,4 @@
-def clause_gen(clause,table):
+def clause_gen(clause,table,cols):
     loc = 0
     if len(clause[loc:]) > 0 and clause[loc] == "from":
         loc += 1
@@ -15,4 +15,19 @@ def clause_gen(clause,table):
                 else:
                     return_string += clause[loc]
             return return_string
+    elif len(clause[loc:]) > 0 and clause[loc] == "aggregate":
+        if not cols:
+            return
+        loc += 1
+        if len(clause[loc:]) > 0 and clause[loc] == "from":
+            loc += 1
+            if len(clause[loc:]) > 0 and clause[loc] == "order by":
+                loc += 1
+                if len(clause[loc:]) == 0:
+                    return_string = "FROM " + table + " GROUP BY {}".format((','.join(cols)))
+                    return return_string
+                elif len(clause[loc:]) > 0 and clause[loc] == "where":
+                    return_string = "FROM " + table + " GROUP BY {} WHERE ".format((','.join(cols)))
+                    return return_string
+
     pass

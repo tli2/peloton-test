@@ -2,6 +2,9 @@ from common import randop
 
 def generate_clause(columns,col_type, rules):
 
+    if not len(rules) > 0:
+        return
+
     # check col_type and set columns
     if col_type == "VarChar":
         columns = columns[0]
