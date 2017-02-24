@@ -8,9 +8,8 @@ def generate_clause(columns,col_type, rules):
     elif col_type == "Int":
         columns = columns[1]
 
-    # check if performing a combination of Operator
-    conjunction = False
-    disjunction = False
+    # check if performing a logical generation
+    conjunction = False; disjunction = False
     if rules[-1] == 'AND' and len(rules) != 1:
         rules = rules[:-1]
         conjunction = True
@@ -19,7 +18,6 @@ def generate_clause(columns,col_type, rules):
         disjunction = True
 
     if col_type == "VarChar":
-        query_formatting = None
         for x in columns:
             for y in rules:
                 query_formatting = [x, y]
@@ -58,4 +56,29 @@ def generate_clause(columns,col_type, rules):
                         return_string += query_formatting[i]
                 yield return_string
     elif col_type == "Int":
-        pass
+        for x in columns:
+            for y in rules:
+                query_formatting = [x, y]
+                if conjunction:
+                    query_formatting.append(randop.create_random_string(randop.create_random_int(1, 20)))
+                    query_formatting.append('AND')
+                    query_formatting.append(columns[randop.create_random_int(0, len(columns) - 1)])
+                    second_operator = rules[randop.create_random_int(0, len(rules) - 1)]
+                    query_formatting.append(randop.create_random_string(randop.create_random_int(1, 20)))
+                elif disjunction:
+                    query_formatting.append(randop.create_random_string(randop.create_random_int(1, 20)))
+                    query_formatting.append('OR')
+                    query_formatting.append(columns[randop.create_random_int(0, len(columns) - 1)])
+                    second_operator = rules[randop.create_random_int(0, len(rules) - 1)]
+                    query_formatting.append(randop.create_random_string(randop.create_random_int(1, 20)))
+                else:
+                    query_formatting.append(randop.create_random_string(randop.create_random_int(1, 20)))
+
+                # create the return string
+                return_string = ""
+                for i in range(len(query_formatting)):
+                    if i > 0:
+                        return_string += " " + query_formatting[i]
+                    else:
+                        return_string += query_formatting[i]
+                yield return_string
