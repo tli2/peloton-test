@@ -1,5 +1,6 @@
 import itertools
 
+
 # this method generates the combinations for the range len(table_columns)
 # it then generates all the permutations for each possible combination
 def generate_column_options(table_columns):

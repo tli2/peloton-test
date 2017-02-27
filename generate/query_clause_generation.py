@@ -1,7 +1,7 @@
 from common import randop
 
-def generate_clause(columns,col_type, rules):
 
+def generate_clause(columns, col_type, rules):
     if not len(rules) > 0:
         return
 
@@ -12,7 +12,8 @@ def generate_clause(columns,col_type, rules):
         columns = columns[1]
 
     # check if performing a logical generation
-    conjunction = False; disjunction = False
+    conjunction = False;
+    disjunction = False
     if rules[-1] == 'AND' and len(rules) != 1:
         rules = rules[:-1]
         conjunction = True

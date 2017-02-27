@@ -1,4 +1,4 @@
-def clause_gen(clause,table,cols):
+def clause_gen(clause, table, cols):
     loc = 0
     if len(clause[loc:]) > 0 and clause[loc] == "from":
         loc += 1
@@ -10,8 +10,8 @@ def clause_gen(clause,table,cols):
             return_string = "FROM " + table + " ORDER BY "
             while len(clause[loc:]) > 0:
                 loc += 1
-                if (clause[loc] == "asc" or clause[loc] == "desc") and len(clause[loc+1:]) > 0:
-                    return_string += clause[loc]+","
+                if (clause[loc] == "asc" or clause[loc] == "desc") and len(clause[loc + 1:]) > 0:
+                    return_string += clause[loc] + ","
                 else:
                     return_string += clause[loc]
             return return_string

@@ -1,4 +1,5 @@
-from common import randop
+
+
 def expression_gen(expression, col):
     loc = 0
     if len(expression[loc:]) > 0 and expression[loc] == "aggregation expression":

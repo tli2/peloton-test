@@ -1,47 +1,45 @@
 def statement_gen(statement):
     loc = 0
-    if len(statement[loc:])>0 and statement[loc] == "access control statement":
+    if len(statement[loc:]) > 0 and statement[loc] == "access control statement":
         loc += 1
         if len(statement[loc:]) > 0 and statement[loc] == "grant":
             pass
         elif len(statement[loc:]) > 0 and statement[loc] == "revoke":
             pass
-    elif len(statement[loc:])>0 and statement[loc] == "session management statement":
+    elif len(statement[loc:]) > 0 and statement[loc] == "session management statement":
         if len(statement[loc:]) > 0 and statement[loc] == "connect":
             pass
         elif len(statement[loc:]) > 0 and statement[loc] == "set":
             pass
-    elif len(statement[loc:])>0 and statement[loc] == "data definition statement":
+    elif len(statement[loc:]) > 0 and statement[loc] == "data definition statement":
         loc += 1
-        if len(statement[loc:])>0 and statement[loc] == "create":
+        if len(statement[loc:]) > 0 and statement[loc] == "create":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "alter":
+        elif len(statement[loc:]) > 0 and statement[loc] == "alter":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "drop":
+        elif len(statement[loc:]) > 0 and statement[loc] == "drop":
             pass
-    elif len(statement[loc:])>0 and statement[loc] == "data manipulation statement":
+    elif len(statement[loc:]) > 0 and statement[loc] == "data manipulation statement":
         loc += 1
         if len(statement[loc:]) > 0 and statement[loc] == "update":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "select":
+        elif len(statement[loc:]) > 0 and statement[loc] == "select":
             return "SELECT "
-        elif len(statement[loc:])>0 and statement[loc] == "insert":
+        elif len(statement[loc:]) > 0 and statement[loc] == "insert":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "delete":
+        elif len(statement[loc:]) > 0 and statement[loc] == "delete":
             pass
-    elif len(statement[loc:])>0 and statement[loc] == "transaction management statement":
-        if len(statement[loc:])>0 and statement[loc] == "commit":
+    elif len(statement[loc:]) > 0 and statement[loc] == "transaction management statement":
+        if len(statement[loc:]) > 0 and statement[loc] == "commit":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "rollback":
+        elif len(statement[loc:]) > 0 and statement[loc] == "rollback":
             pass
-        elif len(statement[loc:])>0 and statement[loc] == "lock table":
+        elif len(statement[loc:]) > 0 and statement[loc] == "lock table":
             pass
-    elif len(statement[loc:])>0 and statement[loc] == "import export statement":
+    elif len(statement[loc:]) > 0 and statement[loc] == "import export statement":
         pass
-    elif len(statement[loc:])>0 and statement[loc] == "procedural statement":
-        if len(statement[loc:])>0 and statement[loc] == "call":
+    elif len(statement[loc:]) > 0 and statement[loc] == "procedural statement":
+        if len(statement[loc:]) > 0 and statement[loc] == "call":
             pass
-
-
 
     return None

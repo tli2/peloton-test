@@ -8,7 +8,6 @@ from generate import expression_generate
 from generate import predicate_generate
 
 
-
 class QueryGenerator:
     def __init__(self, table, cols, col_types):
         global TABLE
@@ -30,9 +29,9 @@ class QueryGenerator:
         # parse into a format below
 
         statement = ["Data Manipulation Statement", "SELECT"]
-        clause = ["Aggregate","FROM", "GROUP BY", "WHERE"]
+        clause = ["Aggregate", "FROM", "GROUP BY", "WHERE"]
         predicate = []
-        expression = ["Aggregate","Avg"]
+        expression = ["Aggregate", "Avg"]
         operator = ["Comparison"]
         col_indicator = ['AGE']
 
@@ -66,7 +65,7 @@ class QueryGenerator:
         query_statement_raw += statement_generate.statement_gen(statement)
 
         # obtain the raw clause
-        query_clause_raw = [clause_generate.clause_gen(clause, TABLE,[]),
+        query_clause_raw = [clause_generate.clause_gen(clause, TABLE, []),
                             predicate_generate.predicate_gen(predicate)]
 
         # format the query
@@ -77,11 +76,11 @@ class QueryGenerator:
                         continue
                     query_statement = query_clause_raw
                     query_statement += x + ','
-                    query_statement += expression_generate.expression_gen(expression,col_indicator)
+                    query_statement += expression_generate.expression_gen(expression, col_indicator)
                 else:
                     query_statement = query_statement_raw
                     query_statement += x
-                    query_statement += expression_generate.expression_gen(expression,col_indicator)
+                    query_statement += expression_generate.expression_gen(expression, col_indicator)
                 rules = operator_generate.operator_gen(operator)
                 for y in query_clause_generation.generate_clause(column_split, col_type, rules):
                     if aggregate_gate:
