@@ -1,100 +1,140 @@
-from common import base_test
-from generate import query_clause_generation
-from generate import query_column_generation
-from generate import operator_generate
-from generate import clause_generate
-from generate import statement_generate
-from generate import expression_generate
-from generate import predicate_generate
+from query_clause_generation import generate_clause
+from query_column_generation import generate_column_options
+import os
+import sys
 
 
 class QueryGenerator:
-    def __init__(self, table, cols, col_types):
-        global TABLE
-        TABLE = table
-        global table_columns
-        table_columns = cols
-        global table_column_types
-        table_column_types = col_types
-        global string_cols
-        string_cols = [table_columns[0][i] for i in range(len(table_column_types[0]))
-                       if table_column_types[0][i] == 1043]
-        global int_cols
-        int_cols = [table_columns[0][i] for i in range(len(table_column_types[0]))
-                    if table_column_types[0][i] == 23]
-        global column_split
-        column_split = [string_cols, int_cols]
+    class QueryLogger:
+        def __init__(self):
+            self.__query_count=0
+            self.__queries=[]
+        def add_query(self,query):
+            if self.__query_count == 5:
+                return
+            self.__query_count+=1
+            self.__queries.append(query)
+        def get_queries(self):
+            return self.__queries
+        def reset(self):
+            self.__queries=[]
+        def toString(self):
+            for x in self.__queries:
+                print(x)
 
-    def get_queries(self, test_file=None):
-        # parse into a format below
+    def __init__(self,debug=None):
+        self.debug=debug
+        if self.debug:
+            self.generator_logger = self.QueryLogger()
+            from common import randop, base_test
+            basedir = os.path.realpath(os.path.dirname(__file__))
+            sys.path.append(os.path.join(basedir, "..", ".."))
+            configPath = os.path.realpath(os.path.join(os.pardir, "test.conf-sample"))
+            dbs = ["oracle", "target"]
+            test_obj = base_test.BaseTest(configPath, dbs)
+            test_obj.setup_connections()
+            test_obj.get_table_names()
+            test_obj.drop_tables()
+            test_obj.build_test_tables()
+            test_obj.get_table_cols()
+            table_columns = test_obj.table_cols
+            table_column_types = test_obj.table_col_types
+            self.setup("CORP",table_columns,table_column_types)
 
-        statement = ["Data Manipulation Statement", "SELECT"]
-        clause = ["Aggregate", "FROM", "GROUP BY", "WHERE"]
-        predicate = []
-        expression = ["Aggregate", "Avg"]
-        operator = ["Comparison"]
-        col_indicator = ['AGE']
+    def setup(self,table_name, cols, col_types):
+        self.table_name=table_name
+        self.table_columns=cols
+        self.table_column_types=col_types
+        self.string_cols=[self.table_columns[0][i] for i in range(len(self.table_column_types[0]))
+                       if self.table_column_types[0][i] == 1043]
+        self.int_cols=[self.table_columns[0][i] for i in range(len(self.table_column_types[0]))
+                    if self.table_column_types[0][i] == 23]
+        self.column_split=[self.string_cols,self.int_cols]
+        self.set_dictionaries()
 
-        """
-        statement = ["Data Manipulation Statement", "SELECT"]
-        clause = ["FROM", "WHERE"]
-        predicate = []
-        expression = []
-        operator = ["Comparison", "Conjunction"]
-        """
+    def walk_dict(self,dict,clauses=[]):
+        for value in dict:
+            if isinstance(dict, set):
+                clauses.append(value)
+            elif dict[value]:
+                self.walk_dict(dict[value], clauses)
+        return clauses
 
-        statement = self.to_lower(statement)
-        clause = self.to_lower(clause)
-        predicate = self.to_lower(predicate)
-        expression = self.to_lower(expression)
-        operator = self.to_lower(operator)
+    def set_dictionaries(self):
+        self.statement_dict = \
+                        {'dms':
+                            {'select':
+                                {'SELECT'}
+                            }
+                        }
 
-        return self.get_queries_helper(statement, clause, predicate, expression, operator, col_indicator)
+        self.clause_dict = \
+                    {'from':
+                        {'where':
+                            {'FROM {} WHERE'}
+                        },
+                    'aggregate':
+                        {'from':
+                            {'orderby':
+                                {'group by {}',
+                                    'group by {} where'
+                                }
+                            }
+                        }
+                    }
+        self.operator_dict=\
+                    {'comparison':
+                         {'=', '>', '<', '<=', '>=', '!='}
+                    }
 
-    @staticmethod
-    def get_queries_helper(statement, clause, predicate, expression, operator, col_indicator):
+        # supported generations
+        # based off of the CORP table in generate_tables.py
+        self.supported_dict={
+            1:'SELECT {0} FROM {1} WHERE {2}',
+            2:'SELECT {0}, {1}({2}) FROM {3} GROUP BY {0}',
+            3:'SELECT {0}, {1}({2}) as age FROM {3} GROUP BY {0} HAVING age > 3.0'
+        }
 
-        # types of columns
+    def get_queries(self,test_file=None):
         col_types = ["VarChar", "Int"]
+        generation = 2
+        col = "AVG"
+        operator_key='comparison'
+        self.get_queries_setup(generation,col)
 
-        # aggregate
-        aggregate_gate = True if expression[0] == 'Aggregate' else False
-
-        # obtain the raw statement
-        query_statement_raw = ""
-        query_statement_raw += statement_generate.statement_gen(statement)
-
-        # obtain the raw clause
-        query_clause_raw = [clause_generate.clause_gen(clause, TABLE, []),
-                            predicate_generate.predicate_gen(predicate)]
-
-        # format the query
+        # go through the column types
         for col_type in col_types:
-            for x in query_column_generation.generate_column_options(table_columns):
-                if aggregate_gate:
-                    if col_indicator[0] in x or '*' in x:
-                        continue
-                    query_statement = query_clause_raw
-                    query_statement += x + ','
-                    query_statement += expression_generate.expression_gen(expression, col_indicator)
-                else:
-                    query_statement = query_statement_raw
-                    query_statement += x
-                    query_statement += expression_generate.expression_gen(expression, col_indicator)
-                rules = operator_generate.operator_gen(operator)
-                for y in query_clause_generation.generate_clause(column_split, col_type, rules):
-                    if aggregate_gate:
-                        query_clause_raw[0] = clause_generate.clause_gen(clause, TABLE, x)
-                        query_clause = ''.join(query_clause_raw)
-                        query_clause += y
-                        query_formatted = query_statement + ' ' + query_clause
-                        yield query_formatted
-                    else:
-                        query_clause = ''.join(query_clause_raw)
-                        query_clause += y
-                        query_formatted = query_statement + ' ' + query_clause
-                        yield query_formatted
+            for col_option in generate_column_options(self.table_columns):
+                rules = list(self.operator_dict[operator_key])
+                for clause_expression in generate_clause(self.column_split, col_type, rules):
+                    query=self.get_queries_helper(generation,col_option,self.table_name,clause_expression)
+                    if self.debug and query is not None:
+                        self.generator_logger.add_query(query)
 
-    @staticmethod
-    def to_lower(list):
-        return [item.lower() for item in list]
+    def get_queries_setup(self,generation,col=None):
+        if generation == 1:
+            pass
+        elif generation == 2:
+            # this is the col that the aggregation is going to be performed on
+            self.col_indicator=self.int_cols[0]
+            self.agg_function=col
+
+    def get_queries_helper(self,generation,col_option,table_name,clause_expression):
+        query=None
+        if generation == 1:
+            query = self.supported_dict[generation].format(col_option, table_name, clause_expression)
+        elif generation == 2:
+            if not ('*' in col_option) and not (self.col_indicator in col_option):
+                query = self.supported_dict[generation]\
+                    .format(col_option, self.agg_function,self.col_indicator,table_name)
+        elif generation == 3:
+            pass
+        return query
+
+
+
+"""
+z = QueryGenerator(True)
+z.get_queries()
+z.generator_logger.toString()
+"""

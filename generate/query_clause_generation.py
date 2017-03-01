@@ -2,8 +2,6 @@ from common import randop
 
 
 def generate_clause(columns, col_type, rules):
-    if not len(rules) > 0:
-        return
 
     # check col_type and set columns
     if col_type == "VarChar":
@@ -12,14 +10,17 @@ def generate_clause(columns, col_type, rules):
         columns = columns[1]
 
     # check if performing a logical generation
-    conjunction = False;
+    conjunction = False
     disjunction = False
+    """
     if rules[-1] == 'AND' and len(rules) != 1:
-        rules = rules[:-1]
-        conjunction = True
+    rules = rules[:-1]
+    conjunction = True
     elif rules[-1] == 'OR' and len(rules) != 1:
-        rules = rules[:-1]
-        disjunction = True
+    rules = rules[:-1]
+    disjunction = True
+    """
+
 
     if col_type == "VarChar":
         for x in columns:
